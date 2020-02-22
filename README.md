@@ -35,7 +35,7 @@ with actions for Login/Register/NotAuthorized/NotAuthenticated etc.
 
 The only element required to connect the User to Identity, is the private
 method in the UserController that builds a ClaimsPrincipal. This is used in 
-in the CookieBased authentication enabled in the Startus.cs and accessed in the
+in the CookieBased authentication enabled in the Startup.cs and accessed in the
 UserController Login method.
 
 ### Additional Functionality

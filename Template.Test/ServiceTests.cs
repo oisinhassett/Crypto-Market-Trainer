@@ -1,6 +1,6 @@
 using System;
 using Xunit;
-
+using Microsoft.AspNetCore.Identity;
 using Template.Data.Models;
 using Template.Data.Services;
 
@@ -14,6 +14,19 @@ namespace Template.Test
         {
             service = new DataService();
             service.Initialise();
+        }
+
+        public void TestHash()
+        {
+		    var ph = new Microsoft.AspNetCore.Identity.PasswordHasher();
+		
+		    var hash = ph.HashPassword("test");
+		
+		    var isCurrentHashValid = ph.VerifyHashedPassword(hash, "test");
+		    var isOlderHashValid = ph.VerifyHashedPassword("AO7kszlVq1gUsEN6eEwH9WcbppmJlG0qtZpmG65xdklCa89AalTbiA+uXXCOVjzDXw==", "test");
+
+            Assert.True(isCurrentHashValid);
+
         }
 
         [Fact]

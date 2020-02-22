@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Template.Data.Models;
 using Template.Data.Repositories;
+using Template.Data.Security;
 
 namespace Template.Data.Services
 {
@@ -55,9 +56,10 @@ namespace Template.Data.Services
         public User Authenticate(string email, string password)
         {
             // retrieve the user based on the EmailAddress (assumes EmailAddress is unique)
-            return db.Users
-                .Where(u => u.EmailAddress == email && password == u.Password)
-                .FirstOrDefault();
+            var user =  db.Users.Where(u => u.EmailAddress == email).FirstOrDefault();
+
+            // Verify the user exists and Hashed User password matches the password provided
+            return (user != null && Hasher.ValidateHash(user.Password, password)) ? user : null;
         }
 
         /// <summary>
@@ -74,7 +76,8 @@ namespace Template.Data.Services
                 return null;
             }
 
-            // should really encrypt the password before storing in database          
+            // More secure to encrypt the password before storing in database  
+            u.Password = Hasher.CalculateHash(u.Password);        
             db.Users.Add(u);
             db.SaveChanges();
             return u;

@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
+
 using Template.Data.Services;
 using Template.Data.Models;
 using Template.Web.ViewModels;
-using Microsoft.AspNetCore.Http;
 
 /**
  *  AMC - User Management Controller providing registration
