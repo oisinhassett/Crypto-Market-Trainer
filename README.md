@@ -14,6 +14,10 @@ platforms.
 The Models and the DataService are the only elements exposed from this project
 and consumers of this project simply need reference it to access its functionalty.
 
+### Security
+Password hashing functionality added via the Security.Hasher class. This is used
+in the DataService to hash the user password before storing in database.
+
 ## Test Project
 The Test project references the Data project and should implement unit tests to
 test the functionalty of the DataService. The tests should be extended to fully
