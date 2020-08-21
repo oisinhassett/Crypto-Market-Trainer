@@ -4,9 +4,9 @@ using System.Text;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-using Template.Data.Models;
+using Template.Core.Models;
+using Template.Core.Security;
 using Template.Data.Repositories;
-using Template.Data.Security;
 
 namespace Template.Data.Services
 {

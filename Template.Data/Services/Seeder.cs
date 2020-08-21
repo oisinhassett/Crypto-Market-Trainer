@@ -1,7 +1,8 @@
-﻿using Template.Data.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Text;
+using System.Collections.Generic;
+
+using Template.Core.Models;
 
 namespace Template.Data.Services
 {

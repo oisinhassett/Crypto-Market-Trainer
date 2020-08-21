@@ -1,8 +1,13 @@
-﻿using Template.Data.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Text;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+
+// required to add console logging
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+using Template.Core.Models;
 
 namespace Template.Data.Repositories
 {
@@ -14,6 +19,12 @@ namespace Template.Data.Repositories
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
+                /** use logger to log the sql commands issued by entityframework **/
+                .UseLoggerFactory(new ServiceCollection()
+                     .AddLogging(builder => builder.AddConsole())
+                     .BuildServiceProvider()
+                     .GetService<ILoggerFactory>()
+                 )   
                 //.UseSqlServer("COMPLETE THIS")
                 .UseSqlite("Filename=Template.db");
         }

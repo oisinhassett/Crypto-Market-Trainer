@@ -13,10 +13,12 @@
     <div class="card-body">
         <h4 class="card-title">Authorized</h4>
         <p class="card-text">This content is only visible if you are Authorized.</p>
+
         <p asp-roles="Admin">This content is only visible if you are authenticated and have the <span class="text-primary">Admin</span> role</p>
         <p asp-roles="Guest">This content is only visible if you are authenticated and have the <span class="text-danger">Guest</span> role</p>
         <p asp-roles="Manager">This content is only visible if you are authenticated and have the <span class="text-danger">Manager</span> role</p>
         <p asp-roles="Admin,Manager">This content is visible if you have the <span class="text-danger">Admin or Manager</span> roles</p>
+
     </div>
 </div>
 

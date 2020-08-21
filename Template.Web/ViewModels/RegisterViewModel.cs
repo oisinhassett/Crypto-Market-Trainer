@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using Template.Data.Models;
+using Template.Core.Models;
 
 namespace Template.Web.ViewModels
 {

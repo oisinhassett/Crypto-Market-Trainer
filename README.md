@@ -5,18 +5,20 @@ DotNet Core 3.x Template Solution
 This template demonstrates concept of separation of concerns (SOC) and is
 a simple implementation of the Onion Architecture.
 
+## Core Project
+The Core project contains all domain entities 
+
+### Security
+Password hashing functionality added via the Security.Hasher class. This is used in the Data project DataService to hash the user password before storing in database.
+
 ## Data Project
 The Data project encapsulates all data related concerns. Internally it
 uses the Repository pattern implemented by EntityFramework Core to handle
 data storage/retrieval. It defaults to using Sqlite for portability across
 platforms.
 
-The Models and the DataService are the only elements exposed from this project
+The DataService is the only element exposed from this project
 and consumers of this project simply need reference it to access its functionalty.
-
-### Security
-Password hashing functionality added via the Security.Hasher class. This is used
-in the DataService to hash the user password before storing in database.
 
 ## Test Project
 The Test project references the Data project and should implement unit tests to

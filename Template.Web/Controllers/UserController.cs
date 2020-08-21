@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 
 using Template.Data.Services;
-using Template.Data.Models;
+using Template.Core.Models;
 using Template.Web.ViewModels;
 
 /**
@@ -117,7 +117,8 @@ namespace Template.Web.Controllers
             var identity = new ClaimsIdentity(new[]
             {  
                 new Claim(ClaimTypes.Name, u.Name),
-                new Claim(ClaimTypes.Role, u.Role.ToString()),          
+                new Claim(ClaimTypes.Role, u.Role.ToString()),
+                new Claim(ClaimTypes.Role, Role.Guest.ToString()),
             }, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             return principal;
