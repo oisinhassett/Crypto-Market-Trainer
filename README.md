@@ -1,5 +1,5 @@
 
-DotNet Core 3.x Template Solution
+DotNet Core 5 Template Solution
 =================================
 
 This template demonstrates concept of separation of concerns (SOC) and is
