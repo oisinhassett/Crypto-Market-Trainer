@@ -9,46 +9,80 @@ namespace Template.Test
 {
     public class ServiceTests
     {
-        private DataService service;
+        private IUserService service;
 
         public ServiceTests()
         {
-            service = new DataService();
+            service = new UserServiceDb();
             service.Initialise();
         }
-
-        // public void TestHash()
-        // {
-		//     var ph = new Microsoft.AspNetCore.Identity.PasswordHasher();
-		
-		//     var hash = ph.HashPassword("test");
-		
-		//     var isCurrentHashValid = ph.VerifyHashedPassword(hash, "test");
-		//     var isOlderHashValid = ph.VerifyHashedPassword("AO7kszlVq1gUsEN6eEwH9WcbppmJlG0qtZpmG65xdklCa89AalTbiA+uXXCOVjzDXw==", "test");
-
-        //     Assert.True(isCurrentHashValid);
-
-        // }
 
         [Fact]
         public void EmptyDbShouldReturnNoUsers()
         {
-            var users = service.GetAllUsers();
+            // act
+            var users = service.GetUsers();
 
+            // assert
             Assert.Equal(0, users.Count);
         }
         
         [Fact]
         public void AddingUsersShouldWork()
         {
-            var u1 = new User { Name = "admin", EmailAddress = "admin@mail.com", Password = "admin", Role = Role.Admin };
-            var u2 = new User { Name = "guest", EmailAddress = "guest@mail.com", Password = "guest", Role = Role.Guest };
-            service.RegisterUser(u1);
-            service.RegisterUser(u2);
+            // arrange
+            service.AddUser("admin", "admin@mail.com", "admin", Role.Admin );
+            service.AddUser("guest", "guest@mail.com", "guest", Role.Guest);
 
-            var users = service.GetAllUsers();
+            // act
+            var users = service.GetUsers();
 
+            // assert
             Assert.Equal(2, users.Count);
+        }
+
+        [Fact]
+        public void UpdatingUserShouldWork()
+        {
+            // arrange
+            var user = service.AddUser("admin", "admin@mail.com", "admin", Role.Admin );
+            
+            // act
+            user.Name = "administrator";
+            user.Email = "admin@mail.com";            
+            var updatedUser = service.UpdateUser(user);
+
+            // assert
+            Assert.Equal("administrator", user.Name);
+            Assert.Equal("admin@mail.com", user.Email);
+        }
+
+        [Fact]
+        public void LoginWithValidCredentialsShouldWork()
+        {
+            // arrange
+            service.AddUser("admin", "admin@mail.com", "admin", Role.Admin );
+            
+            // act            
+            var user = service.Authenticate("admin@mail.com","admin");
+
+            // assert
+            Assert.NotNull(user);
+           
+        }
+
+        [Fact]
+        public void LoginWithInvalidCredentialsShouldNotWork()
+        {
+            // arrange
+            service.AddUser("admin", "admin@mail.com", "admin", Role.Admin );
+
+            // act      
+            var user = service.Authenticate("admin@mail.com","xxx");
+
+            // assert
+            Assert.Null(user);
+           
         }
 
     }

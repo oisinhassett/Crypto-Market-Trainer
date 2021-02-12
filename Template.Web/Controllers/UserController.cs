@@ -18,12 +18,12 @@ namespace Template.Web.Controllers
 {
     public class UserController : BaseController
     {
-        private readonly DataService _svc;
+        private readonly IUserService _svc;
 
         public UserController()
         {
             // ideally we should use Dependency Injection
-            _svc = new DataService();
+            _svc = new UserServiceList();
         }
 
         public IActionResult Login()
@@ -35,7 +35,7 @@ namespace Template.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([Bind("EmailAddress,Password")] User m)
         {
-            var user = _svc.Authenticate(m.EmailAddress, m.Password);
+            var user = _svc.Authenticate(m.Email, m.Password);
             if (user == null)
             {
                 ModelState.AddModelError("EmailAddress", "Invalid Login Credentials");
@@ -67,13 +67,7 @@ namespace Template.Web.Controllers
             {
                 return View(m);
             }
-            var user = _svc.RegisterUser(new User
-            {
-                Name = m.Name,
-                EmailAddress = m.EmailAddress,
-                Password = m.Password,
-                Role = m.Role
-            });
+            var user = _svc.AddUser(m.Name, m.EmailAddress,m.Password, m.Role);
             if (user == null) {
                 Alert("There was a problem Registering. Please try again", AlertType.warning);
                 return View(m);
@@ -99,7 +93,7 @@ namespace Template.Web.Controllers
         [AcceptVerbs("GET", "POST")]
         public IActionResult GetUserByEmailAddress(string EmailAddress)
         {
-            var user = _svc.GetUserByEmailAddress(EmailAddress);
+            var user = _svc.GetUserByEmail(EmailAddress,null);
             if (user != null)
             {
                 return Json($"A user with this email address {EmailAddress} already exists.");

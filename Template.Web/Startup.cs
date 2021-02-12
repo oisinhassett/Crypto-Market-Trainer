@@ -40,14 +40,12 @@ namespace Template.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider provider)
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-
-                // AMC - Call seeder in development mode to recreate database and fill with seed data 
-                Seeder.Seed();
+                // AMC seed users - using service provider to get UserService from DI
+                Seeder.Seed(provider.GetService<IUserService>());
             }
             else
             {

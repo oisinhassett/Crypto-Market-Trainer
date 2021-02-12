@@ -9,25 +9,14 @@ namespace Template.Data.Services
     public static class Seeder
     {
         // use this class to seed the database with dummy 
-        // test data using the DataService 
-        public static void Seed()
+        // test data using an IUserService 
+         public static void Seed(IUserService svc)
         {
-            var service = new DataService();
-            service.Initialise();
-            
-            service.RegisterUser(new User { 
-                Name = "admin", 
-                EmailAddress="admin@mail.com", 
-                Password = "admin", 
-                Role = Role.Admin 
-            });
+            svc.Initialise();
 
-            service.RegisterUser(new User { 
-                Name = "guest", 
-                EmailAddress="guest@mail.com", 
-                Password = "guest", 
-                Role = Role.Guest 
-            });
+            // add users
+            svc.AddUser("admin", "admin@mail.com", "admin", Role.Admin);
+            svc.AddUser("guest", "guest@mail.com", "guest", Role.Guest);    
         }
     }
 }
