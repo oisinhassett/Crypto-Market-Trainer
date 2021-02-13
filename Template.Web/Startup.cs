@@ -36,6 +36,9 @@ namespace Template.Web
             // AMC - Required if using the AuthorizeTagHelper 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+            // Add UserService to DI            
+            services.AddTransient<IUserService,UserServiceList>();
+            
             services.AddControllersWithViews();
         }
 

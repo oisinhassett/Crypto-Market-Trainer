@@ -12,7 +12,7 @@ namespace Template.Web.ViewModels
         [Required]
         [EmailAddress]
         [Remote(action: "GetUserByEmailAddress", controller: "User")]
-        public string EmailAddress { get; set; }
+        public string Email { get; set; }
 
         [Required]
         public string Password { get; set; }

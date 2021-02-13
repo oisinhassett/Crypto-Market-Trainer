@@ -33,12 +33,12 @@ namespace Template.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([Bind("EmailAddress,Password")] User m)
+        public async Task<IActionResult> Login([Bind("Email,Password")] User m)
         {
             var user = _svc.Authenticate(m.Email, m.Password);
             if (user == null)
             {
-                ModelState.AddModelError("EmailAddress", "Invalid Login Credentials");
+                ModelState.AddModelError("Email", "Invalid Login Credentials");
                 ModelState.AddModelError("Password", "Invalid Login Credentials");
                 return View(m);
             }
@@ -61,13 +61,13 @@ namespace Template.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Register([Bind("Name,EmailAddress,Password,PasswordConfirm,Role")] RegisterViewModel m)       
+        public IActionResult Register([Bind("Name,Email,Password,PasswordConfirm,Role")] RegisterViewModel m)       
         {
             if (!ModelState.IsValid)
             {
                 return View(m);
             }
-            var user = _svc.AddUser(m.Name, m.EmailAddress,m.Password, m.Role);
+            var user = _svc.AddUser(m.Name, m.Email,m.Password, m.Role);
             if (user == null) {
                 Alert("There was a problem Registering. Please try again", AlertType.warning);
                 return View(m);
@@ -91,12 +91,12 @@ namespace Template.Web.Controllers
 
         // Called by Remote Validation attribute on RegisterViewModel to verify email address is unique
         [AcceptVerbs("GET", "POST")]
-        public IActionResult GetUserByEmailAddress(string EmailAddress)
+        public IActionResult GetUserByEmailAddress(string email)
         {
-            var user = _svc.GetUserByEmail(EmailAddress,null);
+            var user = _svc.GetUserByEmail(email, null);
             if (user != null)
             {
-                return Json($"A user with this email address {EmailAddress} already exists.");
+                return Json($"A user with this email address {email} already exists.");
             }
             return Json(true);                  
         }
@@ -112,7 +112,7 @@ namespace Template.Web.Controllers
             {  
                 new Claim(ClaimTypes.Name, u.Name),
                 new Claim(ClaimTypes.Role, u.Role.ToString()),
-                new Claim(ClaimTypes.Role, Role.Guest.ToString()),
+                //new Claim(ClaimTypes.Role, Role.Guest.ToString()),
             }, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             return principal;
