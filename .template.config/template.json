@@ -26,5 +26,13 @@
             "path": "Template.Web\\Template.Web.csproj"
         }
     ],
-    "exclude": ["**/[Bb]in/**", "**/[Oo]bj/**", ".template.config/**/*", "**/*.lock.json", "**/.git*", "**/.DS_Store", "**/**/*.db", "**/.vscode/**/*"]
+    "sources": [
+        {
+          "modifiers": [
+            {
+                "exclude": ["**/[Bb]in/**", "**/[Oo]bj/**", ".template.config/**/*", "**/*.lock.json", "**/.git/**", "**/.DS_Store/**", "**/*.db/**", "**/.vscode/**"]
+            }
+          ]
+        }
+      ]
 }
