@@ -51,10 +51,16 @@ Two custom TagHelpers are included that provide
 
 ## Install Template
 
-To install this solution as a template
+To install this solution as a template (template name is termonclean)
 
-``` $ dotnet new -i /full_path_to_cloned_project```
+1. Download current version of the template
 
-Once installed you can create a new project using this template
+    ``` $ git clone https://github.com/termon/DotNetTemplate.git```
 
-``` $ dotnet new termonclean -o SolutionName```
+2. Install the template so it can be used by ```dotnet new``` command. Use the absolute path to the cloned template directory without trailing '/'
+
+    ``` $ dotnet new -i /absolute_path/DotNetTemplate```
+
+3. Once installed you can create a new project using this template
+
+    ``` $ dotnet new termonclean -o SolutionName```
