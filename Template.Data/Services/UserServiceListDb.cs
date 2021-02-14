@@ -48,7 +48,8 @@ namespace Template.Data.Services
             {            
                 Name = name,
                 Email = email,
-                Password = Hasher.CalculateHash(password) // can hash if required               
+                Password = Hasher.CalculateHash(password), // can hash if required 
+                Role = role              
             };
             ctx.Users.Add(user);
             ctx.SaveChanges();

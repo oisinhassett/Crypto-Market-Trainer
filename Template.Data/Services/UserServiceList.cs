@@ -72,7 +72,8 @@ namespace Template.Data.Services
                 Id = Users.Count + 1,
                 Name = name,
                 Email = email,
-                Password = Hasher.CalculateHash(password) // can hash if required               
+                Password = Hasher.CalculateHash(password), // can hash if required 
+                Role = role              
             };
             Users.Add(s);
             Store(); // write to local json store
