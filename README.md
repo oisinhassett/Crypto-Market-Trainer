@@ -28,6 +28,8 @@ The API project provides a RESTful WebApi interface to User management. It refer
 ### Security
 CORS is also enabled and JWT tokens are used for authentication and are configured via a helper class ```Template.Api.Helpers.JwtHelper``` called in ```Startup.cs```.
 
+JWT is configured via ```appsettings.json``` and includes configuration parameters ```JwtSecurityKey```, ```JwtIssuer```, ```JwtAudience```, ```JwtExpiryInDays```. These are already set with default values and can be amended as required. Recommended to change the JwtSecurityKey and ensure this is not committed to git in production.
+
 ## Web Project
 The Web project uses the MVC pattern to implement a web application. It references the Core and Data projects and uses the DataService and Models to access data management functionality. This allows the Web project to be completely independent of EntityFrameworkCore (as used in this template) or any other persistence framework used in the data project.
 
