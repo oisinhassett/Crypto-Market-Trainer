@@ -1,14 +1,17 @@
 
-DotNet Core 5 Template Solution
-=================================
+DotNet Core 5 Clean Template Solution
+=====================================
 
-This template demonstrates concept of separation of concerns (SOC) and is a simple implementation of the Onion Architecture. The template provides user/authentication management for both a Web MVC and a Web API project.
+This template demonstrates concept of separation of concerns (SOC) and is a simple implementation of the Clean Architecture. The template provides user/authentication management for both a Web MVC project using cookies and a Web API project using JWT.
 
 ## Core Project
 The Core project contains all domain entities. 
 
+<<<<<<< HEAD
 General hashing functionality is provided via the ```Template.Core.Security.Hasher``` class. 
 
+=======
+>>>>>>> 06f0bb6abd421ae23dd2e49de57fb8bd966d9527
 ## Data Project
 The Data project encapsulates all data related concerns. Internally it provides two implementations of the IUserService
 
@@ -17,6 +20,8 @@ The Data project encapsulates all data related concerns. Internally it provides 
 
 The Service is the only element exposed from this project and consumers of this project simply need reference it to access its functionalty.
 
+### Security
+Password hashing functionality added via the ```Template.Data.Security.Hasher``` class. This is used in the Data project DataService to hash the user password before storing in database.
 ## Test Project
 The Test project references the Data project and should implement unit tests to test the functionalty of the IUserService. The tests should be extended to fully exercise the functionality of your Service.
 
@@ -53,3 +58,19 @@ Two custom TagHelpers are included that provide
 2. Conditional Display Tag
 
 * `<p asp-condtion="@some_boolean_expression">Only displayed if the condition is true</p>`
+
+## Install Template
+
+To install this solution as a template (template name is termonclean)
+
+1. Download current version of the template
+
+    ``` $ git clone https://github.com/termon/DotNetTemplate.git```
+
+2. Install the template so it can be used by ```dotnet new``` command. Use the absolute path to the cloned template directory without trailing '/'
+
+    ``` $ dotnet new -i /absolute_path/DotNetTemplate```
+
+3. Once installed you can create a new project using this template
+
+    ``` $ dotnet new termonclean -o SolutionName```
