@@ -4,24 +4,15 @@ using Template.Core.Models;
 
 namespace Template.Web.ViewModels
 {
-    public class RegisterViewModel
+    public class UserPasswordViewModel
     {
-        [Required]
-        public string Name { get; set; }
- 
-        [Required]
-        [EmailAddress]
-        [Remote(action: "GetUserByEmailAddress", controller: "User")]
-        public string EmailAddress { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string Password { get; set; }
 
         [Compare("Password", ErrorMessage = "Confirm password doesn't match, Type again !")]
         public string PasswordConfirm  { get; set; }
-
-        [Required]
-        public Role Role { get; set; }
 
     }
 }

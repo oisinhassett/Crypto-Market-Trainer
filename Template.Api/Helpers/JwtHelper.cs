@@ -16,6 +16,7 @@ namespace Template.Api.Helpers
         {
             var claims = new[]
             {
+                new Claim(ClaimTypes.Sid, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Role, user.Role.ToString()),                
                 new Claim(ClaimTypes.Email, user.Email),

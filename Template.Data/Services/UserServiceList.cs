@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Text.Json;
 
 using Template.Core.Models;
-using Template.Data.Security;
+using Template.Core.Security;
 using System.IO;
 
 namespace Template.Data.Services
 {
-    public class UserServiceList : IUserService
+   public class UserServiceList : IUserService
     {
+        private static string STORE = "users.json";
         private IList<User> Users;
 
         public UserServiceList()
@@ -22,7 +23,7 @@ namespace Template.Data.Services
         private void Load()
         {
             try {
-                string json = File.ReadAllText("users.json");            
+                string json = File.ReadAllText(STORE);            
                 Users = JsonSerializer.Deserialize<List<User>>(json);
             } 
             catch (Exception )
@@ -35,7 +36,7 @@ namespace Template.Data.Services
         private void Store()
         {
             var json = JsonSerializer.Serialize(Users);
-            File.WriteAllText("users.json", json);
+            File.WriteAllText(STORE, json);
         }
 
         public void Initialise()
@@ -72,7 +73,8 @@ namespace Template.Data.Services
                 Id = Users.Count + 1,
                 Name = name,
                 Email = email,
-                Password = Hasher.CalculateHash(password) // can hash if required               
+                Password = Hasher.CalculateHash(password), // can hash if required  
+                Role = role             
             };
             Users.Add(s);
             Store(); // write to local json store

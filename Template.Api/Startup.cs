@@ -43,7 +43,7 @@ namespace Template.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Practical.Api", Version = "v1" });
             });
 
-            // Add UserService to DI            
+            // Add UserService to DI  - change to use real UserService          
             services.AddTransient<IUserService,UserServiceList>();
         }
 
@@ -64,6 +64,7 @@ namespace Template.Api
 
             app.UseRouting();
 
+            // configure CORS to allow any - lock down as required
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()

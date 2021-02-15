@@ -5,10 +5,9 @@ DotNet Core 5 Template Solution
 This template demonstrates concept of separation of concerns (SOC) and is a simple implementation of the Onion Architecture. The template provides user/authentication management for both a Web MVC and a Web API project.
 
 ## Core Project
-The Core project contains all domain entities 
+The Core project contains all domain entities. 
 
-## Security
-Password hashing functionality added via the ```Template.Data.Security.Hasher``` class. This is used in the Data project DataService to hash the user password before storing in database.
+General hashing functionality is provided via the ```Template.Core.Security.Hasher``` class. 
 
 ## Data Project
 The Data project encapsulates all data related concerns. Internally it provides two implementations of the IUserService
@@ -22,16 +21,21 @@ The Service is the only element exposed from this project and consumers of this 
 The Test project references the Data project and should implement unit tests to test the functionalty of the IUserService. The tests should be extended to fully exercise the functionality of your Service.
 
 ## API Project
-The API project provides a RESTful WebApi interface to User management. It references the Core and Data projects and uses the DataService and Models to access data management functionality. CORS is also enabled and JWT tokens are used for authentication and are configured via a helper class ```Template.Api.Helpers.JwtHelper``` called in ```Startup.cs```.
+The API project provides a RESTful WebApi interface to User management. It references the Core and Data projects and uses the DataService and Models to access data management functionality. 
+
+### Security
+CORS is also enabled and JWT tokens are used for authentication and are configured via a helper class ```Template.Api.Helpers.JwtHelper``` called in ```Startup.cs```.
 
 ## Web Project
 The Web project uses the MVC pattern to implement a web application. It references the Core and Data projects and uses the DataService and Models to access data management functionality. This allows the Web project to be completely independent of EntityFrameworkCore (as used in this template) or any other persistence framework used in the data project.
 
-The project also uses cookie based user Identity without using the boilerplate template used in the Visual Studio Web MVC project. This allows the developer to gain a better appreciation of how Identity is implemented. The data project implements a User model and the DataService provides user management functionality such as Authenticate, Register etc. The Web project implements a UserController with actions for Login/Register/NotAuthorized/NotAuthenticated etc.
-
-The only element required to connect the User to Identity, is the private method in the UserController that builds a ClaimsPrincipal. This is used in the CookieBased authentication enabled in the Startup.cs and accessed in the UserController Login method.
+The project also uses cookie based user Identity without using the boilerplate template used in the Visual Studio Web MVC project. This allows the developer to gain a better appreciation of how Identity is implemented. The data project implements a User model and the UserService provides user management functionality such as Authenticate, Register etc. The Web project implements a UserController with actions for Login/Register/NotAuthorized/NotAuthenticated etc.
+### Security
+Authentication is configured via an authorisation helper class ```Template.Web.Helpers.AuthHelper``` that utilises CookieBased authentication. To enable authentication, call the ```AuthHelper.AddAuthSimple()``` extension method in Startup.cs configure services.
 
 ### Additional Functionality
+The template replaces the locally installed Bootstrap 4 with Bootstrap 5(beta2) delivered via CDN link.
+
 Any Controller that inherits from the Web project BaseController, can utilise the Alert functionality. Alerts can be used to display alert messages following controller actions.
 
 `Alert("The User Was Registered Successfully", AlertType.info);`

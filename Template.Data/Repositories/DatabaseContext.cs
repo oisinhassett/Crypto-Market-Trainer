@@ -1,5 +1,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 // import the Models (representing structure of tables in database)
 using Template.Core.Models; 
@@ -16,11 +17,13 @@ namespace Template.Data.Repositories
         // Configure the context to use Specified database. We are using 
         // Sqlite database as it does not require any additional installations.
         // Could use SqlServer using connection below if installed
+        // Sensitive Logging is turned on for development but should be turned off in production
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder                  
-                .UseSqlite("Filename=api.db")
-                .LogTo(Console.WriteLine);
+                .UseSqlite("Filename=data.db")
+                .LogTo(Console.WriteLine, LogLevel.Information)
+                .EnableSensitiveDataLogging();
                 //.UseSqlServer(@"Server=(localdb)\mssqllocaldb; Database=SMS; Trusted_Connection=True;ConnectRetryCount=0");
         }
 

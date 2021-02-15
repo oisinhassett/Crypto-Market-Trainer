@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using Template.Core.Models;
-using Template.Data.Security;
+using Template.Core.Security;
 using Template.Data.Repositories;
 namespace Template.Data.Services
 {
@@ -48,7 +48,8 @@ namespace Template.Data.Services
             {            
                 Name = name,
                 Email = email,
-                Password = Hasher.CalculateHash(password) // can hash if required               
+                Password = Hasher.CalculateHash(password), // can hash if required
+                Role = role
             };
             ctx.Users.Add(user);
             ctx.SaveChanges();
@@ -80,7 +81,7 @@ namespace Template.Data.Services
             // update the details of the User retrieved and save
             User.Name = updated.Name;
             User.Email = updated.Email;
-            User.Password = updated.Password;
+            User.Password = Hasher.CalculateHash(updated.Password);  
             User.Role = updated.Role; 
 
             ctx.SaveChanges();          

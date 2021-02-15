@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using Template.Web.Helpers;
 namespace Template.Web
 {
     public class Startup
@@ -27,15 +28,11 @@ namespace Template.Web
         public void ConfigureServices(IServiceCollection services)
         {   
             // AMC - Add Authentication service using Cookie Scheme
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .AddCookie(options => {
-                        options.AccessDeniedPath = "/User/ErrorNotAuthorised";
-                        options.LoginPath = "/User/ErrorNotAuthenticated";
-                    });
+            services.AddAuthSimple();
 
-            // AMC - Required if using the AuthorizeTagHelper 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
+            // Add UserService to DI - change to use real UserService           
+            services.AddTransient<IUserService,UserServiceDb>();
+            
             services.AddControllersWithViews();
         }
 
