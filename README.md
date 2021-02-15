@@ -7,11 +7,8 @@ This template demonstrates concept of separation of concerns (SOC) and is a simp
 ## Core Project
 The Core project contains all domain entities. 
 
-<<<<<<< HEAD
-General hashing functionality is provided via the ```Template.Core.Security.Hasher``` class. 
+General hashing functionality is provided via the ```Template.Core.Security.Hasher``` class.
 
-=======
->>>>>>> 06f0bb6abd421ae23dd2e49de57fb8bd966d9527
 ## Data Project
 The Data project encapsulates all data related concerns. Internally it provides two implementations of the IUserService
 

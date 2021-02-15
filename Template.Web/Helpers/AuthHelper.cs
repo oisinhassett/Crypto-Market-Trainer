@@ -8,6 +8,7 @@ using Template.Core.Models;
 namespace Template.Web.Helpers
 {
     // Static class providing Authentication Helpers
+    // Configured to provide CookieBased Authentication Scheme
     public static class AuthHelper
     {
         public static string AuthenticationScheme => CookieAuthenticationDefaults.AuthenticationScheme;
@@ -28,8 +29,8 @@ namespace Template.Web.Helpers
 
         // This private method is used to generate a ClaimsPrincipal used when signing in
         // Claims can be added to customise the ClaimsIdentity used in generating the ClaimsPrincipal. 
-        // For example, new Claim("Id", u.Id.ToString(), ClaimValueTypes.String) // adds user id to identity 
-        // Also, multiple roles can be added where a user is configured for multiple roles
+        // User Id identity is configured via Sid claim type 
+        // Multiple roles can be added where user model is configured for multiple roles
         public static ClaimsPrincipal BuildPrincipal(User u)
         {
             var identity = new ClaimsIdentity(new[]
