@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Template.Core.Models;
-
 namespace Template.Web.ViewModels
 {
     public class UserRegisterViewModel
-    {
-        
+    { 
         [Required]
         public string Name { get; set; }
  

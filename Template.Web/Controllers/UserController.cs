@@ -10,7 +10,8 @@ using Template.Data.Services;
 using Template.Core.Models;
 using Template.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Template.Web.Helpers;
+using Microsoft.Extensions.Configuration;
+using Template.Core.Security;
 
 /**
  *  AMC - User Management Controller providing registration
@@ -20,21 +21,25 @@ namespace Template.Web.Controllers
 {
     public class UserController : BaseController
     {
+        private readonly IConfiguration _configuration;
         private readonly IUserService _svc;
 
-        public UserController(IUserService svc)
-        {            
+        public UserController(IUserService svc, IConfiguration config)
+        {        
+            _configuration = config;    
             _svc = svc;
         }
 
+
         public IActionResult Login()
         {
+           
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([Bind("Email,Password")] User m)
+        public async Task<IActionResult> Login([Bind("Email,Password")] UserLoginViewModel m)
         {
             var user = _svc.Authenticate(m.Email, m.Password);
             if (user == null)
@@ -45,7 +50,7 @@ namespace Template.Web.Controllers
             }
 
             // Log user in, using cookie authentication
-            await SignIn(user);
+            await SignInCookie(user);
 
             Alert("Successfully Logged in", AlertType.info);
 
@@ -77,7 +82,7 @@ namespace Template.Web.Controllers
         }
 
         [Authorize]
-        public IActionResult Manage()
+        public IActionResult UpdateProfile()
         {
             var user = _svc.GetUser((this.Identity()).Value);
             var userViewModel = new UserManageViewModel { 
@@ -92,7 +97,7 @@ namespace Template.Web.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Manage([Bind("Id,Name,Email,Role")] UserManageViewModel m)       
+        public async Task<IActionResult> UpdateProfile([Bind("Id,Name,Email,Role")] UserManageViewModel m)       
         {
             var user = _svc.GetUser(m.Id);
             
@@ -114,13 +119,14 @@ namespace Template.Web.Controllers
             Alert("Successfully Updated Account Details", AlertType.info);
             
             // sign the user in with updated details)
-            await SignIn(user);
+            await SignInCookie(user);
 
             return RedirectToAction("Index","Home");
         }
 
+        // Change Password
         [Authorize]
-        public IActionResult Password()
+        public IActionResult UpdatePassword()
         {
             var user = _svc.GetUser((this.Identity()).Value);
             var passwordViewModel = new UserPasswordViewModel { 
@@ -134,10 +140,9 @@ namespace Template.Web.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Password([Bind("Id,Password,PasswordConfirm")] UserPasswordViewModel m)       
+        public async Task<IActionResult> UpdatePassword([Bind("Id,OldPassword,Password,PasswordConfirm")] UserPasswordViewModel m)       
         {
             var user = _svc.GetUser(m.Id);
-            
             if (!ModelState.IsValid || user == null)
             {
                 return View(m);
@@ -152,8 +157,8 @@ namespace Template.Web.Controllers
             }
 
             Alert("Successfully Updated Password", AlertType.info);
-            // sign the user in with updated details)
-            await SignIn(user);
+            // sign the user in with updated details
+            await SignInCookie(user);
 
             return RedirectToAction("Index","Home");
         }
@@ -169,6 +174,8 @@ namespace Template.Web.Controllers
         public IActionResult ErrorNotAuthorised() => View();
         public IActionResult ErrorNotAuthenticated() => View();
 
+        
+        // -------------------------- Helper Methods ------------------------------
 
         // Called by Remote Validation attribute on RegisterViewModel to verify email address is unique
         [AcceptVerbs("GET", "POST")]
@@ -185,13 +192,27 @@ namespace Template.Web.Controllers
             return Json(true);                  
         }
 
+        // Called by Remote Validation attribute on ChangePassword to verify old password
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult VerifyPassword(string oldPassword)
+        {
+            // get identity id of signed in user
+            var id = this.Identity().GetValueOrDefault();            
+            // check if email is available, unless already owned by user with id
+            var user = _svc.GetUser(id);
+            if (user == null || !Hasher.ValidateHash(user.Password, oldPassword))
+            {
+                return Json($"Please enter current password.");
+            }
+            return Json(true);                  
+        }
 
-        // Sign user in using authentication scheme configured via AuthHelper
-        private async Task SignIn(User user)
+        // Sign user in using Cookie authentication scheme
+        private async Task SignInCookie(User user)
         {
             await HttpContext.SignInAsync(
-                AuthHelper.AuthenticationScheme,
-                AuthHelper.BuildPrincipal(user)
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                AuthBuilder.BuildClaimsPrincipal(user)
             );
         }
     }

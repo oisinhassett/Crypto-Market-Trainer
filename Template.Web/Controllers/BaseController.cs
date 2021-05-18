@@ -31,6 +31,12 @@ namespace Template.Web.Controllers
             catch (FormatException) { }
             return null;
         }
+        
+        // check if user us currently authenticated
+        public bool IsAuthenticated() 
+        {
+            return User.Identity.IsAuthenticated;
+        }
     }
  
 }

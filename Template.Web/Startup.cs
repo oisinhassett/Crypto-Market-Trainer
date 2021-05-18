@@ -1,18 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Template.Data.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using Template.Web.Helpers;
 namespace Template.Web
 {
     public class Startup
@@ -27,12 +20,21 @@ namespace Template.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {   
-            // AMC - Add Authentication service using Cookie Scheme
-            services.AddAuthSimple();
+            
+            // ** Add Cookie and Jwt Authentication using extension method **
+            services.AddCookieAndJwtAuthentication(Configuration);
 
+            // ** Add Cookie Authentication via extension method **
+            //services.AddCookieAuthentication();
+
+            // ** Enable Cors for and webapi endpoints provided **
+            services.AddCors();
+            
             // Add UserService to DI - change to use real UserService           
             services.AddTransient<IUserService,UserServiceDb>();
-            
+
+            // ** Required to enable asp-authorize Taghelper **            
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddControllersWithViews();
         }
 
@@ -50,12 +52,17 @@ namespace Template.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
-            // AMC - turn on authentication/authorisation
+            // ** configure cors to allow full cross origin access to any webapi end points **
+            app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+
+            // ** turn on authentication/authorisation **
             app.UseAuthentication();
             app.UseAuthorization();
  

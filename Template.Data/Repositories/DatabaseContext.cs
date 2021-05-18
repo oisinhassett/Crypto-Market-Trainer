@@ -20,8 +20,8 @@ namespace Template.Data.Repositories
         {
             optionsBuilder                  
                 .UseSqlite("Filename=data.db")
-                .LogTo(Console.WriteLine, LogLevel.Information)
-                .EnableSensitiveDataLogging(); // remove in production
+                .LogTo(Console.WriteLine, LogLevel.Information) // remove in production
+                .EnableSensitiveDataLogging();                  // remove in production
         }
 
         // Convenience method to recreate the database thus ensuring  the new database takes 
