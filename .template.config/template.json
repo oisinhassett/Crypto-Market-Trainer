@@ -2,7 +2,7 @@
     "author": "a.mccaughey@gmail.com",
     "classifications": [ "Web","MVC","Api" ],
     "name": "Termoncs Clean Architecture Template",
-    "identity": "termoncs.com.clean",   
+    "identity": "clean.termoncs.com",   
     "shortName": "termonclean",           
     "tags": {
         "language": "C#"                  
