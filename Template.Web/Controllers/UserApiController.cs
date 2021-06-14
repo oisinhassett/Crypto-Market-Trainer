@@ -13,30 +13,48 @@ using Template.Web.ViewModels;
 namespace Template.Web.Controllers
 {
 
+    // ** This is a Demo WebAPI Controller provides User Login Using JWT Token **
+
     [ApiController]    
     [Route("api")]     
     // set default auth scheme as we are using both cookie and jwt authentication
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class ApiController : ControllerBase
+    public class UserApiController : ControllerBase
     {
-        private readonly IUserService svc;       
-        private readonly IConfiguration config; // jwt settings
+        private readonly IUserService _svc;       
+        private readonly IConfiguration _config; // jwt settings
       
-        public ApiController(IUserService service, IConfiguration configuration)
+        public UserApiController(IUserService service, IConfiguration _configuration)
         {      
-            config = configuration;            
-            svc = service;
+            _config = _configuration;            
+            _svc = service;
         }
 
-        // POST api/user/login
+        // POST api/login
         [AllowAnonymous]
         [HttpPost("login")]
         public ActionResult<User> Login(UserLoginViewModel login)        
         {                     
-            var user = svc.Authenticate(login.Email, login.Password);            
+            var user = _svc.Authenticate(login.Email, login.Password);            
             if (user == null)
             {
                 return BadRequest(new { message = "Email or Password are incorrect" });
+            }
+            // sign jwt token to use in secure api requests
+            var authUser = SignInJwt(user);
+
+            return Ok(authUser);
+        }  
+
+        // POST api/login
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public ActionResult<User> Register(UserRegisterViewModel reg)        
+        {                     
+            var user = _svc.AddUser(reg.Name, reg.Email, reg.Password, reg.Role);
+            if (user == null)
+            {
+                return BadRequest(new { message = "User Could not be Registered" });
             }
             // sign jwt token to use in secure api requests
             var authUser = SignInJwt(user);
@@ -53,7 +71,7 @@ namespace Template.Web.Controllers
                 Name = user.Name,
                 Email = user.Email,              
                 Role = user.Role,
-                 Token = AuthBuilder.BuildJwtToken(user, config),
+                Token = AuthBuilder.BuildJwtToken(user, _config),
             };
         }     
 

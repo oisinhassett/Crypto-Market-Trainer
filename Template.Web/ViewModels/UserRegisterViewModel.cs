@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Template.Core.Models;
 namespace Template.Web.ViewModels
@@ -20,6 +21,7 @@ namespace Template.Web.ViewModels
         public string PasswordConfirm  { get; set; }
 
         [Required]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public Role Role { get; set; }
 
     }

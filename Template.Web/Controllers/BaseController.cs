@@ -7,7 +7,7 @@ namespace Template.Web.Controllers
 {
     public enum AlertType { success, danger, warning, info }
 
-    // Implements Alert functionality which is then accessible to any 
+    // Implements General functionality which is then accessible to any 
     // Controller inheriting from BaseController
     public class BaseController : Controller
     {
@@ -19,17 +19,18 @@ namespace Template.Web.Controllers
         }
 
         // return user identity ID if authenticated otherwise null
-        public int? Identity()
+        public int GetSignedInUserId()
         {
             try
             {
                 if (User.Identity.IsAuthenticated) {
+                    // id stored as a string in the Sid claim - convert to an int and return
                     string sid = User.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Sid).Value;
                     return Int32.Parse(sid);
                 }
             }
             catch (FormatException) { }
-            return null;
+            return 0;
         }
         
         // check if user us currently authenticated

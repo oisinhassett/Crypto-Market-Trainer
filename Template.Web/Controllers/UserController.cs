@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -14,26 +13,24 @@ using Microsoft.Extensions.Configuration;
 using Template.Core.Security;
 
 /**
- *  AMC - User Management Controller providing registration
- *        and login functionality
+ *  User Management Controller providing registration and login functionality
  */
 namespace Template.Web.Controllers
 {
     public class UserController : BaseController
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _config;
         private readonly IUserService _svc;
 
         public UserController(IUserService svc, IConfiguration config)
         {        
-            _configuration = config;    
+            _config = config;    
             _svc = svc;
         }
 
 
         public IActionResult Login()
         {
-           
             return View();
         }
 
@@ -42,6 +39,7 @@ namespace Template.Web.Controllers
         public async Task<IActionResult> Login([Bind("Email,Password")] UserLoginViewModel m)
         {
             var user = _svc.Authenticate(m.Email, m.Password);
+            // check if login was unsuccessful and add validation errors
             if (user == null)
             {
                 ModelState.AddModelError("Email", "Invalid Login Credentials");
@@ -49,7 +47,7 @@ namespace Template.Web.Controllers
                 return View(m);
             }
 
-            // Log user in, using cookie authentication
+            // Login Successful, so sign user in using cookie authentication
             await SignInCookie(user);
 
             Alert("Successfully Logged in", AlertType.info);
@@ -70,7 +68,9 @@ namespace Template.Web.Controllers
             {
                 return View(m);
             }
+            // add user via service
             var user = _svc.AddUser(m.Name, m.Email,m.Password, m.Role);
+            // check if error adding user and display warning
             if (user == null) {
                 Alert("There was a problem Registering. Please try again", AlertType.warning);
                 return View(m);
@@ -84,7 +84,8 @@ namespace Template.Web.Controllers
         [Authorize]
         public IActionResult UpdateProfile()
         {
-            var user = _svc.GetUser((this.Identity()).Value);
+           // use BaseClass helper method to retrieve Id of signed in user 
+            var user = _svc.GetUser(GetSignedInUserId());
             var userViewModel = new UserManageViewModel { 
                 Id = user.Id, 
                 Name = user.Name, 
@@ -100,17 +101,19 @@ namespace Template.Web.Controllers
         public async Task<IActionResult> UpdateProfile([Bind("Id,Name,Email,Role")] UserManageViewModel m)       
         {
             var user = _svc.GetUser(m.Id);
-            
+            // check if form is invalid and redisplay
             if (!ModelState.IsValid || user == null)
             {
                 return View(m);
             } 
-            // update user details 
+
+            // update user details and call service
             user.Name = m.Name;
             user.Email = m.Email;
-            user.Role = m.Role;
-        
+            user.Role = m.Role;        
             var updated = _svc.UpdateUser(user);
+
+            // check if error updating service
             if (updated == null) {
                 Alert("There was a problem Updating. Please try again", AlertType.warning);
                 return View(m);
@@ -128,7 +131,8 @@ namespace Template.Web.Controllers
         [Authorize]
         public IActionResult UpdatePassword()
         {
-            var user = _svc.GetUser((this.Identity()).Value);
+            // use BaseClass helper method to retrieve Id of signed in user 
+            var user = _svc.GetUser(GetSignedInUserId());
             var passwordViewModel = new UserPasswordViewModel { 
                 Id = user.Id, 
                 Password = user.Password, 
@@ -174,15 +178,14 @@ namespace Template.Web.Controllers
         public IActionResult ErrorNotAuthorised() => View();
         public IActionResult ErrorNotAuthenticated() => View();
 
-        
         // -------------------------- Helper Methods ------------------------------
 
         // Called by Remote Validation attribute on RegisterViewModel to verify email address is unique
         [AcceptVerbs("GET", "POST")]
         public IActionResult GetUserByEmailAddress(string email)
         {
-            // get identity id of signed in user
-            var id = this.Identity();
+            // use BaseClass helper method to retrieve Id of signed in user 
+            var id = GetSignedInUserId();
             // check if email is available, unless already owned by user with id
             var user = _svc.GetUserByEmail(email, id);
             if (user != null)
@@ -196,8 +199,8 @@ namespace Template.Web.Controllers
         [AcceptVerbs("GET", "POST")]
         public IActionResult VerifyPassword(string oldPassword)
         {
-            // get identity id of signed in user
-            var id = this.Identity().GetValueOrDefault();            
+            // use BaseClass helper method to retrieve Id of signed in user 
+            var id = GetSignedInUserId();            
             // check if email is available, unless already owned by user with id
             var user = _svc.GetUser(id);
             if (user == null || !Hasher.ValidateHash(user.Password, oldPassword))

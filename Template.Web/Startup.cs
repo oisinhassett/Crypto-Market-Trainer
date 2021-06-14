@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Text.Json.Serialization;
+
 namespace Template.Web
 {
     public class Startup
@@ -21,11 +23,11 @@ namespace Template.Web
         public void ConfigureServices(IServiceCollection services)
         {   
             
-            // ** Add Cookie and Jwt Authentication using extension method **
-            services.AddCookieAndJwtAuthentication(Configuration);
-
             // ** Add Cookie Authentication via extension method **
             //services.AddCookieAuthentication();
+
+            // ** Add Cookie and Jwt Authentication via extension method **
+            services.AddCookieAndJwtAuthentication(Configuration);
 
             // ** Enable Cors for and webapi endpoints provided **
             services.AddCors();
@@ -35,6 +37,7 @@ namespace Template.Web
 
             // ** Required to enable asp-authorize Taghelper **            
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            
             services.AddControllersWithViews();
         }
 
@@ -43,7 +46,7 @@ namespace Template.Web
         {
             if (env.IsDevelopment())
             {
-                // AMC seed users - using service provider to get UserService from DI
+                // seed users - using service provider to get UserService from DI
                 Seeder.Seed(provider.GetService<IUserService>());
             }
             else
@@ -60,7 +63,6 @@ namespace Template.Web
 
             // ** configure cors to allow full cross origin access to any webapi end points **
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
 
             // ** turn on authentication/authorisation **
             app.UseAuthentication();

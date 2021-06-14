@@ -5,7 +5,7 @@ using Template.Core.Models;
 
 namespace Template.Data.Services
 {
-    // This interface describes the operations that a StudentService class should implement
+    // This interface describes the operations that a UserService class should implement
     public interface IUserService
     {
         // Initialise the repository - only to be used during development 
